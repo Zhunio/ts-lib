@@ -1,0 +1,26 @@
+{
+  "name": "ts-lib",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "webpack --mode development --info-verbosity none --config webpack.config.js",
+    "build": "webpack --mode production --config webpack.config.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^13.0.3",
+    "clean-webpack-plugin": "^3.0.0",
+    "gts": "^1.1.2",
+    "nodemon": "^2.0.1",
+    "progress-bar-webpack-plugin": "^2.1.0",
+    "ts-loader": "^7.0.0",
+    "ts-node": "^8.5.4",
+    "tslint": "^6.0.0",
+    "tslint-config-airbnb": "^5.11.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2",
+    "webpack-shell-plugin": "^0.5.0"
+  }
+}
