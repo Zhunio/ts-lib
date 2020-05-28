@@ -1,14 +1,13 @@
-const { resolve } = require('path');
-const merge       = require('webpack-merge');
+const { resolve, join } = require('path');
 
-const { HotModuleReplacementPlugin } = require('webpack');
+const merge   = require('webpack-merge');
 
-const ProgressBarPlugin      = require('progress-bar-webpack-plugin');
+const HtmlWebpackPlugin      = require('html-webpack-plugin');
+const UnminifiedWebpackPlugin = require('unminified-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackShellPlugin     = require('webpack-shell-plugin');
 
 const app    = 'lib.ts';
-const bundle = 'lib.js';
+const bundle = 'lib.min.js';
 
 const entryPoint = resolve(__dirname, 'src', app);
 const bundlePath = resolve(__dirname, 'dist');
@@ -21,11 +20,8 @@ const base = {
         path: bundlePath,
         globalObject: 'this',
         library: 'lib',
+        libraryTarget: 'window',
     },
-
-    devtool: 'source-map',
-
-    stats: 'minimal',
 
     resolve: {
         extensions: ['.tsx', '.ts', '.js', '.json'],
@@ -37,19 +33,32 @@ const base = {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
+                options: {
+                    // override tsconfig.json options
+                    compilerOptions: {
+                        declaration: false,
+                    }
+                }
             },
         ],
     },
 
     plugins: [
         new CleanWebpackPlugin(),
-        new ProgressBarPlugin()
+        new HtmlWebpackPlugin({
+            template: 'src/index.html'
+        }),
+        new UnminifiedWebpackPlugin()
     ],
 
+    stats: {
+        modules: false,
+        entrypoints: false,
+        children: false
+    },
+
     externals: {
-        leaflet: {
-            root: 'L'
-        }
+        leaflet: 'L'
     }
 };
 
@@ -63,14 +72,11 @@ const development = (env, argv) => {
     return {
         mode: 'development',
 
-        watch: true,
+        devtool: 'source-map',
 
-        plugins: [
-            new HotModuleReplacementPlugin(),
-            new WebpackShellPlugin({
-                onBuildEnd: ['nodemon dist/' + bundle]
-            })
-        ]
+        devServer: {
+            contentBase: join(__dirname, 'dist'),
+        },
     }
 };
 
